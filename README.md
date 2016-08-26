@@ -32,7 +32,7 @@ This implementation as of now (August 2016) only supports ```VTC```, ```VMP```, 
 - Reading a ```VMR``` file:
 ```python
 >>> import nibabel as nb
->>> vmr = nb.load('/Users/tce/git/nibabel/nibabel/tests/data/test.vmr')
+>>> vmr = nb.load('~/git/nibabel/nibabel/tests/data/test.vmr')
 >>> print vmr
 <class 'nibabel.brainvoyager.bv_vmr.BvVmrImage'>
 data shape (5, 4, 3)
@@ -48,7 +48,7 @@ metadata:
 - Changing the header of a ```VMP``` file and saving the file:
 ```python
 >>> import nibabel as nb
->>> vmp = nb.load('/Users/tce/git/nibabel/nibabel/tests/data/test.vmp')
+>>> vmp = nb.load('~/git/nibabel/nibabel/tests/data/test.vmp')
 >>> print vmp.header._hdr_dict['vtc_filename']
 'test.vtc'
 >>> vmp.header._hdr_dict['vtc_filename'] = 'test2.vtc'
@@ -62,7 +62,7 @@ metadata:
 - Accessing data from a ```VTC``` file:
 ```python
 >>> import nibabel as nb
->>> vtc = nb.load('/Users/tce/git/nibabel/nibabel/tests/data/test.vtc')
+>>> vtc = nb.load('~/git/nibabel/nibabel/tests/data/test.vtc')
 >>> vtc_data = vtc.get_data()
 >>> print vtc_data
 [[[[  1.81556824e+02   1.56530869e+02   9.43887100e+01   1.59228455e+02
