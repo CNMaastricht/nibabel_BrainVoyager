@@ -9,13 +9,15 @@ Important note: As of now (August 2016) the [pull request](https://github.com/ni
 
 
 1. From the command line, clone the repository (change the directory accordingly):
-```
-git clone https://github.com/thomastweets/nibabel.git ~/git/nibabel
-```
+   
+   ```
+   git clone https://github.com/thomastweets/nibabel.git ~/git/nibabel
+   ```
 2. Install the local clone with pip as a development package:
-```
-pip install -e ~/git/nibabel
-```
+   
+   ```
+   pip install -e ~/git/nibabel
+   ```
 
 ## Basic usage
 You can easily explore the functionality of nibabel from the (iPython) REPL. Please see also the [nibabel documentation](http://nipy.org/nibabel/manual.html). As a general principle all header information is stored in an ordered dictionary that can be altered in an image (header) object (see below for an example). Some sanity checks are performed on load and save, however, the user needs to know about valid values for header fields in order to keep compatibility with BrainVoyager.
