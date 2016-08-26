@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Nibabel brainvoyager by CNMaastricht</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Nibabel brainvoyager</h1>
+      <h2 class="project-tagline">First steps tutorial for using nibabel with BrainVoyager files</h2>
+      <a href="https://github.com/CNMaastricht/nibabel_BrainVoyager" class="btn">View on GitHub</a>
+      <a href="https://github.com/CNMaastricht/nibabel_BrainVoyager/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/CNMaastricht/nibabel_BrainVoyager/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="first-steps-user-guide-bv-file-formats-in-nibabel" class="anchor" href="#first-steps-user-guide-bv-file-formats-in-nibabel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>First steps user guide: BV file formats in nibabel</h1>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Important note: As of now (August 2016) the <a href="https://github.com/nipy/nibabel/pull/216">pull request</a> is not yet merged in to the main repository of nibabel. Therefore, we need to install from a nibabel fork of Thomas Emmerling. As soon as a new version of nibabel is released that includes the new features, this manual installation procedure is not needed anymore and nibabel can be installed through the usual package repositories (pip, etc.; see also <a href="http://nipy.org/nibabel/installation.html">http://nipy.org/nibabel/installation.html</a>).</p>
+
+<h3>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h3>
+
+<ul>
+<li>git</li>
+<li><p>Python environment (preferably <a href="https://www.continuum.io/downloads">Anaconda</a>)</p></li>
+</ul>
+
+<ol>
+<li>
+<p>From the command line, clone the repository (change the directory accordingly):</p>
+
+<pre><code>git clone https://github.com/thomastweets/nibabel.git ~/git/nibabel
+</code></pre>
+</li>
+<li>
+<p>Install the local clone with pip as a development package:</p>
+
+<pre><code>pip install -e ~/git/nibabel
+</code></pre>
+</li>
+</ol>
+
+<h2>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic usage</h2>
+
+<p>You can easily explore the functionality of nibabel from the (iPython) REPL. Please see also the <a href="http://nipy.org/nibabel/manual.html">nibabel documentation</a>. As a general principle all header information is stored in an ordered dictionary that can be altered in an image (header) object (see below for an example). Some sanity checks are performed on load and save, however, the user needs to know about valid values for header fields in order to keep compatibility with BrainVoyager.</p>
+
+<p>Whenever possible, an affine transformation to real-world space (RAS+; <em>i.e.</em> rightward-anterior-superior orientation with axes running from negative to positive in these directions; see also <a href="http://nipy.org/nibabel/coordinate_systems.html#nibabel-always-uses-an-ras-output-space">this</a>) is computed and available as the <code>affine</code> property of objects. In some file formats this is only possible as an estimation (<em>e.g.</em> <code>VTC</code> files) but maintains compatibility with other file formats available in nibabel.</p>
+
+<p>To save memory resources nibabel is capable of on-the-fly disk access via the <code>dataobj</code> property. See <a href="http://nipy.org/nibabel/images_and_memory.html#saving-time-and-memory">here</a> and below for an example.</p>
+
+<p>This implementation as of now (August 2016) only supports <code>VTC</code>, <code>VMP</code>, <code>MSK</code>, and <code>VMR</code> files in their respective current versions.</p>
+
+<h3>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h3>
+
+<ul>
+<li>Reading a <code>VMR</code> file:</li>
+</ul>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">import</span> nibabel <span class="pl-k">as</span> nb
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vmr <span class="pl-k">=</span> nb.load(<span class="pl-s"><span class="pl-pds">'</span>~/git/nibabel/nibabel/tests/data/test.vmr<span class="pl-pds">'</span></span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> vmr
+<span class="pl-k">&lt;</span><span class="pl-k">class</span> <span class="pl-s"><span class="pl-pds">'</span>nibabel.brainvoyager.bv_vmr.BvVmrImage<span class="pl-pds">'</span></span><span class="pl-k">&gt;</span>
+data shape (<span class="pl-c1">5</span>, <span class="pl-c1">4</span>, <span class="pl-c1">3</span>)
+affine:
+[[<span class="pl-k">-</span><span class="pl-c1">1</span>.  0.  0.  0.]
+ [ <span class="pl-c1">0</span>.  0. <span class="pl-k">-</span><span class="pl-c1">1</span>. <span class="pl-k">-</span><span class="pl-c1">1</span>.]
+ [ <span class="pl-c1">0</span>. <span class="pl-k">-</span><span class="pl-c1">1</span>.  0.  1.]
+ [ <span class="pl-c1">0</span>.  0.  0.  1.]]
+metadata:
+<span class="pl-k">&lt;</span>nibabel.brainvoyager.bv_vmr.BvVmrHeader <span class="pl-c1">object</span> at <span class="pl-c1"><span class="pl-k">0x</span>10a6a5ed0</span><span class="pl-k">&gt;</span></pre></div>
+
+<ul>
+<li>Changing the header of a <code>VMP</code> file and saving the file:</li>
+</ul>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">import</span> nibabel <span class="pl-k">as</span> nb
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vmp <span class="pl-k">=</span> nb.load(<span class="pl-s"><span class="pl-pds">'</span>~/git/nibabel/nibabel/tests/data/test.vmp<span class="pl-pds">'</span></span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> vmp.header._hdr_dict[<span class="pl-s"><span class="pl-pds">'</span>vtc_filename<span class="pl-pds">'</span></span>]
+<span class="pl-s"><span class="pl-pds">'</span>test.vtc<span class="pl-pds">'</span></span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vmp.header._hdr_dict[<span class="pl-s"><span class="pl-pds">'</span>vtc_filename<span class="pl-pds">'</span></span>] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>test2.vtc<span class="pl-pds">'</span></span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> vmp.header._hdr_dict[<span class="pl-s"><span class="pl-pds">'</span>vtc_filename<span class="pl-pds">'</span></span>]
+<span class="pl-s"><span class="pl-pds">'</span>test2.vtc<span class="pl-pds">'</span></span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vmp.to_filename(<span class="pl-s"><span class="pl-pds">'</span>~/test.vmp<span class="pl-pds">'</span></span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c"># or alternatively</span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> nb.save(vmp, <span class="pl-s"><span class="pl-pds">'</span>~/test.vmp<span class="pl-pds">'</span></span>)</pre></div>
+
+<ul>
+<li>Accessing data from a <code>VTC</code> file:</li>
+</ul>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">import</span> nibabel <span class="pl-k">as</span> nb
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vtc <span class="pl-k">=</span> nb.load(<span class="pl-s"><span class="pl-pds">'</span>~/git/nibabel/nibabel/tests/data/test.vtc<span class="pl-pds">'</span></span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> vtc_data <span class="pl-k">=</span> vtc.get_data()
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> vtc_data
+[[[[  <span class="pl-c1">1.81556824e+02</span>   <span class="pl-c1">1.56530869e+02</span>   <span class="pl-c1">9.43887100e+01</span>   <span class="pl-c1">1.59228455e+02</span>
+      <span class="pl-c1">1.75129471e+02</span>]
+   [  <span class="pl-c1">1.34450317e+02</span>   <span class="pl-c1">1.40765467e+01</span>   <span class="pl-c1">2.48943806e+01</span>   <span class="pl-c1">8.50732346e+01</span>
+      <span class="pl-c1">1.56533157e+02</span>]
+   [  <span class="pl-c1">1.17829308e+02</span>   <span class="pl-c1">9.44271851e+01</span>   <span class="pl-c1">6.75769424e+00</span>   <span class="pl-c1">3.60147057e+01</span>
+      <span class="pl-c1">1.86363937e+02</span>]
+   <span class="pl-c1">...</span>,
+
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c"># nibabel is also capable of on-the-fly data access (not loading the whole file at once):</span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> vtc.dataobj[<span class="pl-c1">0</span>,<span class="pl-c1">0</span>,<span class="pl-c1">0</span>,:]
+[ <span class="pl-c1">181.55682373</span>  <span class="pl-c1">156.53086853</span>   <span class="pl-c1">94.38871002</span>  <span class="pl-c1">159.22845459</span>  <span class="pl-c1">175.12947083</span>]</pre></div>
+
+<ul>
+<li>Creating a new <code>MSK</code> file:</li>
+</ul>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">import</span> nibabel <span class="pl-k">as</span> nb
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">import</span> numpy <span class="pl-k">as</span> np
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> msk_data <span class="pl-k">=</span> np.zeros((<span class="pl-c1">10</span>,<span class="pl-c1">10</span>,<span class="pl-c1">10</span>))
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c"># we need to convert the numpy array to the correct datatype for MSK files</span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> msk <span class="pl-k">=</span> nb.brainvoyager.BvMskImage(msk_data.astype(np.dtype(<span class="pl-s"><span class="pl-pds">'</span>uint8<span class="pl-pds">'</span></span>)), <span class="pl-c1">None</span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> msk.shape
+(<span class="pl-c1">10</span>, <span class="pl-c1">10</span>, <span class="pl-c1">10</span>)
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c"># the header was filled with standard values that fit the shape of the data</span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-c1">print</span> msk.header._hdr_dict
+OrderedDict([(<span class="pl-s"><span class="pl-pds">'</span>resolution<span class="pl-pds">'</span></span>, <span class="pl-c1">3</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>x_start<span class="pl-pds">'</span></span>, <span class="pl-c1">57</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>x_end<span class="pl-pds">'</span></span>, <span class="pl-c1">87</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>y_start<span class="pl-pds">'</span></span>, <span class="pl-c1">52</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>y_end<span class="pl-pds">'</span></span>, <span class="pl-c1">82</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>z_start<span class="pl-pds">'</span></span>, <span class="pl-c1">59</span>),
+             (<span class="pl-s"><span class="pl-pds">'</span>z_end<span class="pl-pds">'</span></span>, <span class="pl-c1">89</span>)])
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> msk.to_filename(<span class="pl-s"><span class="pl-pds">'</span>~/test.msk<span class="pl-pds">'</span></span>)</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/CNMaastricht/nibabel_BrainVoyager">Nibabel brainvoyager</a> is maintained by <a href="https://github.com/CNMaastricht">CNMaastricht</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
